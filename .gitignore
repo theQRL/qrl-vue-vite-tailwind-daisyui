@@ -128,3 +128,12 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Agent skills, installed locally with `npx skills add`.
+# Not redistributable: daisyUI Charts is a paid product whose licence forbids
+# free distribution of the package, and the vendored daisyUI skill ships without
+# its upstream licence notice. Install them yourself if you hold a licence.
+.agents/
+.claude/skills/
+.claude/settings.local.json
+skills-lock.json

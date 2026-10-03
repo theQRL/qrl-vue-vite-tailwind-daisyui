@@ -1,3 +1,328 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss" source(none);
+@plugin "@tailwindcss/typography";
+@plugin "daisyui";
+
+/* Scan only app source. Without source(none), Tailwind's automatic detection
+   walks the whole project, so any Markdown or vendored tooling that happens to
+   contain class names would pull unused components into the build. */
+@source "../index.html";
+@source "../src";
+
+/* ============================================================
+   QRL design system — Tailwind v4 + daisyUI 5
+   Ported from theqrl.org.
+   Two selectable brands, each with a light + dark theme:
+     dawn   -> qrl-dawn (dark, default)  / qrl-dawn-light
+     vacuum -> qrl-vacuum (dark)         / qrl-vacuum-light
+   Active theme is set on <html data-theme>; the brand lives on
+   <html data-brand> so the toggle knows which pair to switch in.
+   ============================================================ */
+
+/* ---------- self-hosted variable fonts (latin) ---------- */
+@font-face { font-family: "Archivo"; src: url("/fonts/webfonts/archivo.woff2") format("woff2"); font-weight: 400 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Source Sans 3"; src: url("/fonts/webfonts/source-sans-3.woff2") format("woff2"); font-weight: 400 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Space Grotesk"; src: url("/fonts/webfonts/space-grotesk.woff2") format("woff2"); font-weight: 400 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Inter"; src: url("/fonts/webfonts/inter.woff2") format("woff2"); font-weight: 400 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "JetBrains Mono"; src: url("/fonts/webfonts/jetbrains-mono.woff2") format("woff2"); font-weight: 400 500; font-style: normal; font-display: swap; }
+
+/* ---------- Tailwind theme tokens (generate utilities) ---------- */
+@theme {
+  --font-display: var(--brand-font-display, "Archivo", ui-sans-serif, system-ui, sans-serif);
+  --font-sans: var(--brand-font-body, "Source Sans 3", ui-sans-serif, system-ui, sans-serif);
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* fluid type scale */
+  --text-hero: clamp(2.15rem, 1.2rem + 4.2vw, 4.75rem);
+  --text-display: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+  --text-h2: clamp(1.6rem, 1.25rem + 1.5vw, 2.4rem);
+  --text-h3: clamp(1.25rem, 1.05rem + 0.8vw, 1.6rem);
+  --text-lead: clamp(1.05rem, 0.98rem + 0.4vw, 1.3rem);
+
+  /* section rhythm */
+  --spacing-section: clamp(3.5rem, 2rem + 6vw, 7rem);
+}
+
+/* fonts follow the active brand (theme name prefix) */
+[data-theme^="qrl-dawn"]   { --brand-font-display: "Archivo", ui-sans-serif, system-ui, sans-serif; --brand-font-body: "Source Sans 3", ui-sans-serif, system-ui, sans-serif; }
+[data-theme^="qrl-vacuum"] { --brand-font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif; --brand-font-body: "Inter", ui-sans-serif, system-ui, sans-serif; }
+
+/* ================= daisyUI themes ================= */
+
+/* --- Quantum Dawn (dark, default) --- */
+@plugin "daisyui/theme" {
+  name: "qrl-dawn";
+  default: true;
+  prefersdark: true;
+  color-scheme: dark;
+  --color-base-100: #0a1720;
+  --color-base-200: #0e1f2b;
+  --color-base-300: #14293a;
+  --color-base-content: #e6eef5;
+  --color-primary: #ffa729;
+  --color-primary-content: #0a1720;
+  --color-secondary: #3fa9ff;
+  --color-secondary-content: #04223c;
+  --color-accent: #8b76ff;
+  --color-accent-content: #120a2e;
+  --color-neutral: #14293a;
+  --color-neutral-content: #e6eef5;
+  --color-info: #25c8d8;
+  --color-info-content: #042227;
+  --color-success: #4fb477;
+  --color-success-content: #04140b;
+  --color-warning: #ffa729;
+  --color-warning-content: #0a1720;
+  --color-error: #e85c41;
+  --color-error-content: #1a0500;
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.875rem;
+  --border: 1px;
+}
+
+/* --- Quantum Dawn (light) --- */
+@plugin "daisyui/theme" {
+  name: "qrl-dawn-light";
+  default: false;
+  prefersdark: false;
+  color-scheme: light;
+  --color-base-100: #f6f8fb;
+  --color-base-200: #eef2f7;
+  --color-base-300: #e2e8f0;
+  --color-base-content: #0a1720;
+  --color-primary: #e8890b;
+  --color-primary-content: #ffffff;
+  --color-secondary: #1e86e0;
+  --color-secondary-content: #ffffff;
+  --color-accent: #523ae2;
+  --color-accent-content: #ffffff;
+  --color-neutral: #0a1720;
+  --color-neutral-content: #f6f8fb;
+  --color-info: #0b7e94;
+  --color-info-content: #ffffff;
+  --color-success: #2f9e5f;
+  --color-success-content: #ffffff;
+  --color-warning: #b45c09;
+  --color-warning-content: #ffffff;
+  --color-error: #d64328;
+  --color-error-content: #ffffff;
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.875rem;
+  --border: 1px;
+}
+
+/* --- Hard Vacuum (dark) --- */
+@plugin "daisyui/theme" {
+  name: "qrl-vacuum";
+  default: false;
+  prefersdark: false;
+  color-scheme: dark;
+  --color-base-100: #05070a;
+  --color-base-200: #0d1117;
+  --color-base-300: #12181f;
+  --color-base-content: #f2f5f7;
+  --color-primary: #ffb61e;
+  --color-primary-content: #05070a;
+  --color-secondary: #22d3ee;
+  --color-secondary-content: #05070a;
+  --color-accent: #b07cff;
+  --color-accent-content: #1a0a33;
+  --color-neutral: #12181f;
+  --color-neutral-content: #f2f5f7;
+  --color-info: #5b8cff;
+  --color-info-content: #041035;
+  --color-success: #36d399;
+  --color-success-content: #05140d;
+  --color-warning: #ffb61e;
+  --color-warning-content: #05070a;
+  --color-error: #f87272;
+  --color-error-content: #1a0303;
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.375rem;
+  --border: 1px;
+}
+
+/* --- Hard Vacuum (light) --- */
+@plugin "daisyui/theme" {
+  name: "qrl-vacuum-light";
+  default: false;
+  prefersdark: false;
+  color-scheme: light;
+  --color-base-100: #ffffff;
+  --color-base-200: #f4f6f8;
+  --color-base-300: #e6eaee;
+  --color-base-content: #05070a;
+  --color-primary: #b8730a;
+  --color-primary-content: #ffffff;
+  --color-secondary: #0891b2;
+  --color-secondary-content: #ffffff;
+  --color-accent: #7c3aed;
+  --color-accent-content: #ffffff;
+  --color-neutral: #05070a;
+  --color-neutral-content: #ffffff;
+  --color-info: #2563eb;
+  --color-info-content: #ffffff;
+  --color-success: #0f9d58;
+  --color-success-content: #ffffff;
+  --color-warning: #b8730a;
+  --color-warning-content: #ffffff;
+  --color-error: #dc2626;
+  --color-error-content: #ffffff;
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.375rem;
+  --border: 1px;
+}
+
+/* ================= component tuning ================= */
+/* daisyUI's button hover mixes 7% black into the rest background and then
+   copies that result onto the border. On the dark QRL themes that pulls the
+   button *toward* the page colour, so hover barely registers, and it wipes out
+   btn-outline's border by making it match the fill.
+   Shift toward base-content instead — that darkens on the light themes and
+   lightens on the dark ones — and keep the border a step apart from the fill so
+   the button still reads as an outlined shape while hovered. */
+@utility btn {
+  &:hover {
+    --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-200)), var(--color-base-content) 14%);
+    --btn-border: color-mix(in oklab, var(--btn-bg), var(--color-base-content) 30%);
+  }
+}
+
+/* btn-outline is defined by its ring, so hover keeps the full-strength border
+   rather than fading it into the fill. */
+@utility btn-outline {
+  &:hover {
+    --btn-border: var(--btn-color, var(--color-base-content));
+  }
+}
+
+/* A default badge is base-100 filled with a base-200 border, and those two shades
+   sit within a few percent of each other in every QRL theme — so the border reads
+   as absent in both light and dark. Derive it from base-content instead, which
+   stays visible whichever way the theme runs.
+   `var(--badge-color, …)` is the test for "no colour modifier": the coloured
+   badges define it and keep their own border. The styled variants own their
+   border outright (currentColor, or a soft mix), so they are excluded. */
+@utility badge {
+  &:not(.badge-outline, .badge-dash, .badge-soft, .badge-ghost) {
+    border-color: var(--badge-color, color-mix(in oklab, var(--color-base-content) 25%, transparent));
+  }
+}
+
+/* btn-ghost has no border at rest; hovering one should not grow it a border. */
+@utility btn-ghost {
+  &:hover {
+    --btn-border: #0000;
+  }
+}
+
+/* ================= base ================= */
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+/* ================= components / helpers ================= */
+@layer components {
+  /* page width */
+  .container-site { width: 100%; max-width: 78rem; margin-inline: auto; padding-inline: 1.25rem; }
+  .container-prose { width: 100%; max-width: 46rem; margin-inline: auto; padding-inline: 1.25rem; }
+
+  /* eyebrow / kicker label */
+  .kicker {
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--color-primary);
+  }
+  [data-theme^="qrl-vacuum"] .kicker { font-family: var(--font-mono); letter-spacing: 0.08em; color: var(--color-secondary); }
+
+  /* section title block */
+  .section-eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-primary); }
+  .section-heading { font-size: var(--text-h2); font-weight: 700; }
+
+  /* brand hero background treatments */
+  .hero-surface { position: relative; overflow: clip; }
+  [data-theme^="qrl-dawn"] .hero-surface::before {
+    content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(120% 130% at 88% -10%, color-mix(in oklab, var(--color-primary) 10%, transparent) 0%, transparent 46%),
+                radial-gradient(100% 120% at 10% 110%, color-mix(in oklab, var(--color-secondary) 8%, transparent) 0%, transparent 50%);
+  }
+  [data-theme^="qrl-vacuum"] .hero-surface::before {
+    content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background-image: linear-gradient(color-mix(in oklab, var(--color-secondary) 6%, transparent) 1px, transparent 1px),
+                      linear-gradient(90deg, color-mix(in oklab, var(--color-secondary) 6%, transparent) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(120% 100% at 70% 0%, #000 0%, transparent 75%);
+  }
+  .hero-surface > * { position: relative; z-index: 1; }
+
+  /* logo-wall item: grayscale until hover */
+  .logo-item { filter: grayscale(1); opacity: 0.7; transition: filter .25s, opacity .25s; }
+  .logo-item:hover { filter: grayscale(0); opacity: 1; }
+
+  /* skip link (a11y) */
+  .skip-link {
+    position: fixed; top: -100%; left: 1rem; z-index: 100;
+    background: var(--color-primary); color: var(--color-primary-content);
+    padding: 0.6rem 1rem; border-radius: var(--radius-field); font-weight: 600;
+  }
+  .skip-link:focus { top: 1rem; }
+
+  /* sticky header */
+  .site-header {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in oklab, var(--color-base-100) 82%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color .3s, background .3s;
+  }
+  .site-header.is-scrolled {
+    border-bottom-color: color-mix(in oklab, var(--color-base-content) 12%, transparent);
+    background: color-mix(in oklab, var(--color-base-100) 92%, transparent);
+  }
+}
+
+/* ---------- prose (markdown content) themed from daisyUI tokens ---------- */
+.prose {
+  --tw-prose-body: color-mix(in oklab, var(--color-base-content) 82%, transparent);
+  --tw-prose-headings: var(--color-base-content);
+  --tw-prose-lead: color-mix(in oklab, var(--color-base-content) 72%, transparent);
+  --tw-prose-links: var(--color-secondary);
+  --tw-prose-bold: var(--color-base-content);
+  --tw-prose-counters: color-mix(in oklab, var(--color-base-content) 60%, transparent);
+  --tw-prose-bullets: color-mix(in oklab, var(--color-base-content) 40%, transparent);
+  --tw-prose-hr: color-mix(in oklab, var(--color-base-content) 14%, transparent);
+  --tw-prose-quotes: var(--color-base-content);
+  --tw-prose-quote-borders: var(--color-primary);
+  --tw-prose-captions: color-mix(in oklab, var(--color-base-content) 55%, transparent);
+  --tw-prose-code: var(--color-base-content);
+  --tw-prose-pre-code: #e6eef5;
+  --tw-prose-pre-bg: #0b1620;
+  --tw-prose-th-borders: color-mix(in oklab, var(--color-base-content) 22%, transparent);
+  --tw-prose-td-borders: color-mix(in oklab, var(--color-base-content) 12%, transparent);
+  max-width: none;
+}
+.prose :where(h2,h3,h4):not(:where([class~="not-prose"] *)) { font-family: var(--font-display); scroll-margin-top: 6rem; }
+.prose :where(a):not(:where([class~="not-prose"] *)) { font-weight: 600; text-underline-offset: 3px; }
+
+/* theme-toggle icon: sun in dark mode (switch to light), moon in light mode */
+[data-icon-moon] { display: none; }
+[data-icon-sun]  { display: block; }
+[data-theme$="-light"] [data-icon-sun]  { display: none; }
+[data-theme$="-light"] [data-icon-moon] { display: block; }
